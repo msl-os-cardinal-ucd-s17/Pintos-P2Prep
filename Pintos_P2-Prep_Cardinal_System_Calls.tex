@@ -88,7 +88,7 @@ type and a complete list of system call numbers can be found in \textit{src/lib/
 
 \begin{enumerate}
 \item What synchronization constructs should be used to track the state of a child process directly executed by its parent process? 
-\item What synchronization constructs besides file system synchronization are required for the system calls "exec" and "wait"?
+\item Besides those relating to the file system, what other inter-process factors, if any, must be synchronized within the system calls "exec" and "wait"?
 \item Assuming that the interrupt frame's stack pointer points to valid user-mode virtual memory, how can the system call handler verify that the memory of arbitrary user processes isn't unintentionally modified?
 \item Abstracting the question posed in the Project 2 DESIGNDOC template, are there any possible advantages by changing the mapping between thread ID's and process ID's when dealing with system calls?
 \item How do real-world operating systems (e.g. Linux) handle system calls with an arbitrary number of arguments? More specifically, is it possible (or worthwhile) to dynamically create system calls with an arbitrary number of arguments?
