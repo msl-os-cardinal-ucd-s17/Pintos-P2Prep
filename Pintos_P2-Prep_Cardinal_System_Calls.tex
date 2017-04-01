@@ -87,6 +87,8 @@ type and a complete list of system call numbers can be found in \textit{src/lib/
 \section*{Open Questions}
 
 \begin{enumerate}
+\item Since file system code must be treated as a critical section within system calls (Pintos Manual: pg. 32), how should Pintos' synchronization mechanisms be employed to temporarily inhibit user process concurrency?
+\item What synchronization construct should be used to track the state of a child process directly executed by its parent process? In other words, what synchronization constructs are required for the system calls exec and wait?
 \item 
 \end{enumerate}
 
