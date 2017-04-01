@@ -96,6 +96,15 @@ type and a complete list of system call numbers can be found in \textit{src/lib/
 
 \section*{Conclusion}
 
+In order for an operating system to do much of anything useful it must be able to run programs written by users. This cannot be 
+accomplished without having a mechanism in place for user level processes to communicate with the kernel. System calls act as the 
+entry point for this communication and provide a number of benefits. By having a well defined set of system calls, kernel and user 
+level code can be developed independently and still transfer between one another as long as they abide by the criteria set forth by 
+the system call API. Furthermore, system calls act as a line of defense for the kernel. System calls define what actions user 
+programs are allowed to request and they must be implemented in such a way that user programs cannot infiltrate the operation of the
+kernel inappropriately. This will be a critical bit of functionality in Pintos P2 and foresight must be used so that Pintos is able
+to handle a user program probing the kernel in any number of fringe cases.
+
 \pagebreak
 \begin{appendices}
 
