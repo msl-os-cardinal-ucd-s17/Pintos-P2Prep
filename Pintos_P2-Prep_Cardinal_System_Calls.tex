@@ -23,16 +23,13 @@
 \section{System Calls}
 
 \subsection{Overview}
-In the simplest terms, a system call is merely a way for a program to request that the operating system kernel perform some action. Because the operations governed by the kernel are of a privileged nature, a program cannot always directly perform the necessary actions. When these instances occur, the program must make a query to the kernel to act as an intermediary and act on its behalf. 
-
-System calls are a consequence of an operating system that is built on Dual-Mode Operation. Dual-Mode is a way to describe the context in which an instruction is being executed. In user mode, an instruction must be checked if the process running it has the appropriate permissions. On the flip side, in kernel mode an operation is allowed to execute without any check on permissions. In essence, kernel mode allows unfettered access to actions which are otherwise restricted. The major flaw of this design being that Dual-Mode forces us to draw a line between what constitutes a protected kernel operation and what does not. Because of this we must have a way for a user program to interface with the kernel. System calls are one way for a user level program to transfer control to temporarily transfer control to the kernel.
+System calls are a consequence of an operating system built upon Dual-Mode Operation. The dual-mode paradigm allows the operating system to place instructions within two different execution contexts: "user mode" and "kernel mode". In user mode, an instruction must be checked if the process running it has the appropriate permissions. On the flip side, operations in kernel mode can execute without additional permissions. In other words, kernel mode allows unfettered access to actions which are otherwise restricted. Dual-mode operations force programmers to draw a line between what constitutes a protected kernel operation and what does not. For this to be possible, the operating system provides user processes with system calls to interface with the kernel. More specifically, user-mode processes use system calls to query the kernel to act as an intermediary. To aid in understanding the execution and control flow of system calls for our upcoming second Pintos project, this document provides a technical overview of system call transitions and the corresponding interrupt that enables the aforementioned transitions.
 
 \subsection{Mode Transitions}
-Obviously if we are running a system in dual-mode we need a way to transfer from user to kernel mode and vice-versa from kernel to user. Transfer of control can happen in more than one way and it it vital to know when and why the transitions have occurred.
 
 \subsubsection{User to Kernel}
 
-\paragraph{System Calls:}The primary distinction between a system call and other modes of transfer is that a user processes makes a voluntary request to switch modes while other modes are involuntary. In many cases this call is a special instruction known as a trap instruction which changes the next instruction of the process to begin at a pre-defined block. A different trap instruction is used for each system call and therefore acts similar to a function call with the major distinction being that the kernel is now tasked with executing that function. Upon completion the kernel restores the program counter of the process to the instruction immediately following the trap and restores any contextual data such as register values etc.
+\paragraph{System Calls:}The primary distinction between a system call and the other mode transitions is that a user process makes a voluntary request to switch modes whereas the other mode transitions are involuntary. In many cases, this request is a special instruction known as a \textbf{trap instruction} which changes the next instruction of the process to begin at a pre-defined block. Different trap instructions are used for each system call and thus behave similarly to function calls. However, note that the kernel is where the desired actions of the system call are executed. Upon completion, the kernel restores the program counter of the process to the instruction immediately following the trap and then restores any contextual data (such as register values).
 
 \paragraph{Interrupts:}Interrupts that come from external sources cause a temporary transfer of control from the user mode to kernel 
 mode. When a interrupt occurs then that event must be dealt with. The only way for this to occur is for the kernel to regain control 
@@ -46,12 +43,11 @@ process depending on what the exception is.
 \subsubsection{Kernel to User}
 Kernel to User transfer is somewhat more straightforward. The kernel is tasked with starting new processes and after the kernel has 
 completed its job, control is shifted back to user mode so the process can begin. After the kernel is finished handling an 
-interrupt or system call it restores the program counter of the interrupted process and switches back to user mode to allow the 
-process to resume. 
-
+interrupt or system call, it restores the program counter of the interrupted process and switches back to user mode so that the process can resume.
 
 \subsection{Internal Interrupts}
-As opposed to external interrupts which are generated by events outside the cpu, internal interrupts are caused directly by CPU instructions. In addition this makes internal interrupts synchronous (synchronized with CPU instructions) as opposed to external interrupts which are not synchronized with the CPU and can occur at any point during the execution of a instruction. System calls therefore manifest as internal interrupts because there exists a direct link between where the instruction is called in the program and when the interrupt occurs.
+As opposed to external interrupts which are generated by events outside the CPU, internal interrupts are caused directly by CPU instructions. Furthermore, internal interrupts are \textbf{synchronous} (i.e. synchronized with CPU instructions) as opposed to external interrupts which are not synchronized with the CPU and can occur at any point during the execution of a instruction. System calls therefore manifest as internal interrupts because there exists a direct link between where the instruction is called in the program and when the interrupt occurs.
+
 \subsection{System Calls in Pintos}
 A major task in Pintos P2-User Programs will be implementing system calls to for process management and file system operations. These include functionality such as starting and exiting user processes, and operations for working with files such as reading/writing, creating and deleting files. A full list of the system calls that must be implemented can be found in section 3.3.4 of the Pintos Manual, or Appendix A of this document.
 
@@ -59,9 +55,9 @@ Some of the system calls directly access the file system. It is important to pro
 
 \subsubsection{Assembly Instructions}
 One question that remains is how to invoke the system call after it has been made from the user space. Pintos accomplishes this task 
-in a way consistent with the simulated IA-32 architecture that it runs on. Pintos defines four macros in \textit{/lib/user/syscall.c}, one for 0,1,2, or 3 arguments that are passed to that particular system 
-call. Each argument is pushed onto the stack before the actual system call is invoked by the 'int \$0x30' assembly instruction. This 
-assembly instruction plus the system call number passed to the function are used to go to the correct position in an interrupt 
+in a way consistent with the simulated IA-32 architecture that it runs on. Pintos defines four macros in \textit{/lib/user/syscall.c}, one for 0, 1, 2, or 3 arguments that are passed to that particular system 
+call. Each argument is pushed onto the stack before the actual system call is invoked by the 'int \$0x30' assembly instruction. Both the 
+assembly instruction and the system call number that was passed into the function determine the correct position in an interrupt 
 vector table. Each entry in the vector table points to the code needed to appropriately handle the event associated with the system
 call number. An example of one system call function is shown below:
 \begin{lstlisting}[frame=single,basicstyle=\footnotesize]
@@ -91,7 +87,7 @@ type and a complete list of system call numbers can be found in \textit{src/lib/
 \section*{Open Questions}
 
 \begin{enumerate}
-\item Questions here
+\item 
 \end{enumerate}
 
 
